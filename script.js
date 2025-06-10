@@ -9,18 +9,12 @@ async function fetchLatestVideos() {
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!data.items) {
-      console.error('لم يتم العثور على فيديوهات');
-      return [];
-    }
+    if (!data.items) return [];
 
-    // ترجع قائمة الفيديوهات
     return data.items
       .filter(item => item.id.kind === 'youtube#video')
       .map(item => ({
-        videoId: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.high.url
+        videoId: item.id.videoId
       }));
   } catch (error) {
     console.error('خطأ في جلب الفيديوهات:', error);
@@ -29,10 +23,10 @@ async function fetchLatestVideos() {
 }
 
 async function displayVideos() {
-  const videoGrid = document.querySelector('.video-grid');
+  const videoGrid = document.getElementById('video-grid');
   const videos = await fetchLatestVideos();
 
-  videoGrid.innerHTML = ''; // مسح المحتوى القديم
+  videoGrid.innerHTML = '';
 
   videos.forEach(video => {
     const iframe = document.createElement('iframe');
@@ -42,5 +36,4 @@ async function displayVideos() {
   });
 }
 
-// عند تحميل الصفحة اعرض الفيديوهات
 window.addEventListener('DOMContentLoaded', displayVideos);
